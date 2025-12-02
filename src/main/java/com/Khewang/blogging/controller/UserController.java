@@ -3,6 +3,7 @@ package com.Khewang.blogging.controller;
 import com.Khewang.blogging.payload.ApiResponse;
 import com.Khewang.blogging.payload.UserDto;
 import com.Khewang.blogging.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +22,14 @@ public class UserController {
 
     //create user
     @PostMapping("/")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
       UserDto createUserDto =  this.userService.createUser(userDto);
       return new ResponseEntity<>(createUserDto, HttpStatus.CREATED);
     }
 
     //update user
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDto>  updateUser(@RequestBody UserDto userDto, @PathVariable("userId") Integer id){
+    public ResponseEntity<UserDto>  updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userId") Integer id){
         UserDto updatedUser = this.userService.updateUser(userDto, id);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
