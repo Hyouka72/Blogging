@@ -3,6 +3,7 @@ package com.Khewang.blogging.controller;
 import com.Khewang.blogging.model.Post;
 import com.Khewang.blogging.payload.PostDto;
 import com.Khewang.blogging.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class PostController {
 
     //create
     @PostMapping("/user/{userId}/category/{categoryId}/posts")
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto,
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto,
                                               @PathVariable Integer userId,
                                               @PathVariable Integer categoryId){
 

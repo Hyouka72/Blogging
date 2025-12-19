@@ -17,7 +17,7 @@ public class UserDto {
 
     private int id;
     @NotBlank(message = "Name cannot be blank")
-    @Size(min =3 , message = "Username should be min of 4 character")
+    @Size(min =3 , message = "Username should be min of 3 character")
     private String name;
 
 
