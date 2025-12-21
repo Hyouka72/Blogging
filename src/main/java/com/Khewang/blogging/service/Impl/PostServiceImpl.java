@@ -12,12 +12,15 @@ import com.Khewang.blogging.repository.UserRepository;
 import com.Khewang.blogging.service.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,13 +38,24 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private CategoryRepository categoryRepo;
+    @Autowired
+    private FileServiceImpl fileService;
+
+    @Value("project.image")
+    private String path;
 
     @Override
-    public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
+    public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId, MultipartFile file) {
         User user = this.userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User","User id", userId));
         Category category = this.categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
         Post post = this.modelMapper.map(postDto, Post.class);
-        post.setImageName("default.png");
+        String imagepath = null;
+        try {
+            imagepath = fileService.uploadImage(path,file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        post.setImageName(imagepath);
         post.setAddedDate(new Date());
         post.setUser(user);
         post.setCategory(category);

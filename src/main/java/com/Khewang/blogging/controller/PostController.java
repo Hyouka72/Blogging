@@ -1,16 +1,25 @@
 package com.Khewang.blogging.controller;
 
 import com.Khewang.blogging.config.AppConstants;
+import com.Khewang.blogging.exception.ResourceNotFoundException;
 import com.Khewang.blogging.payload.ApiResponse;
 import com.Khewang.blogging.payload.PostDto;
 import com.Khewang.blogging.payload.PostResponse;
+import com.Khewang.blogging.service.FileService;
 import com.Khewang.blogging.service.PostService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -20,14 +29,37 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    //create
-    @PostMapping("/user/{userId}/category/{categoryId}/posts")
-    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto,
-                                              @PathVariable Integer userId,
-                                              @PathVariable Integer categoryId){
+    @Autowired
+    private FileService fileService;
+    @Value("project.image")
+    private String path;
 
-        PostDto createPost =  this.postService.createPost(postDto, userId, categoryId);
-        return  new ResponseEntity<>(createPost, HttpStatus.CREATED);
+    //create
+//    @PostMapping("/user/{userId}/category/{categoryId}/posts")
+//    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto,
+//                                              @PathVariable Integer userId,
+//                                              @PathVariable Integer categoryId,
+//                                              @RequestParam("image")MultipartFile image
+//                                                                                ){
+//
+//        PostDto createPost =  this.postService.createPost(postDto, userId, categoryId, image);
+//        return  new ResponseEntity<>(createPost, HttpStatus.CREATED);
+//    }
+
+    @PostMapping("/user/{userId}/category/{categoryId}/posts")
+    public ResponseEntity<PostDto> createPost(
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam("image") MultipartFile image,
+            @PathVariable Integer userId,
+            @PathVariable Integer categoryId)
+    {
+        PostDto postDto = new PostDto();
+        postDto.setTitle(title);
+        postDto.setContent(content);
+
+        PostDto createPost = this.postService.createPost(postDto, userId, categoryId, image);
+        return new ResponseEntity<>(createPost, HttpStatus.CREATED);
     }
 
     //get by user
@@ -89,6 +121,29 @@ public class PostController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    //post image upload
 
+    @PostMapping("/post/image/upload/{postId}")
+    public ResponseEntity<PostDto> uploadPostImage(
+            @RequestParam("image")MultipartFile image,
+            @PathVariable Integer postId
+            ) throws IOException {
+        PostDto postDto =  this.postService.getPostById(postId);
+        String filename =  this.fileService.uploadImage(path, image);
+
+
+
+        postDto.setImageName(filename);
+        PostDto updatePost = this.postService.updatePost(postDto, postId);
+        return new ResponseEntity<>(updatePost, HttpStatus.OK);
+    }
+
+    //method to serve files
+    @GetMapping(value = "post/image/{imageName}",produces = MediaType.IMAGE_JPEG_VALUE)
+    public void downloadFile(@PathVariable("imageName") String imageName, HttpServletResponse response) throws IOException {
+        InputStream resource = this.fileService.getResource(path,imageName);
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource, response.getOutputStream());
+    }
 
 }

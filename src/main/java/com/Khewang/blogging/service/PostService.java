@@ -3,12 +3,13 @@ package com.Khewang.blogging.service;
 import com.Khewang.blogging.model.Post;
 import com.Khewang.blogging.payload.PostDto;
 import com.Khewang.blogging.payload.PostResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface PostService {
     //create
-    PostDto createPost(PostDto postDto,Integer userId, Integer categoryId);
+    PostDto createPost(PostDto postDto,Integer userId, Integer categoryId, MultipartFile file);
 
     //update
     PostDto updatePost(PostDto postDto, Integer postId);
