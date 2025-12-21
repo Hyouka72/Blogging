@@ -2,6 +2,7 @@ package com.Khewang.blogging.controller;
 
 import com.Khewang.blogging.payload.ApiResponse;
 import com.Khewang.blogging.payload.PostDto;
+import com.Khewang.blogging.payload.PostResponse;
 import com.Khewang.blogging.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +46,11 @@ public class PostController {
     //get all post
 
     @GetMapping("/posts")
-    public ResponseEntity<List<PostDto>> getAllPost(
-            @RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+    public ResponseEntity<PostResponse> getAllPost(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5", required = false)Integer pageSize
     ){
-        List<PostDto> posts = this.postService.getAllPost(pageNumber,pageSize );
+        PostResponse posts = this.postService.getAllPost(pageNumber,pageSize );
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 

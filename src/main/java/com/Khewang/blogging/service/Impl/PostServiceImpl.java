@@ -5,6 +5,7 @@ import com.Khewang.blogging.model.Category;
 import com.Khewang.blogging.model.Post;
 import com.Khewang.blogging.model.User;
 import com.Khewang.blogging.payload.PostDto;
+import com.Khewang.blogging.payload.PostResponse;
 import com.Khewang.blogging.repository.CategoryRepository;
 import com.Khewang.blogging.repository.PostRepository;
 import com.Khewang.blogging.repository.UserRepository;
@@ -70,7 +71,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPost(Integer pageNumber, Integer pageSize) {
+    public PostResponse getAllPost(Integer pageNumber, Integer pageSize) {
 
 //        int pageSize = 5;
 //        int pageNumber = 1;
@@ -81,7 +82,16 @@ public class PostServiceImpl implements PostService {
         List<Post> allPost = pagePost.getContent();
         List<PostDto> postDtos = allPost.stream().map((post )-> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
 
-        return postDtos;
+        PostResponse postResponse = new PostResponse();
+
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(p.getPageNumber());
+        postResponse.setPageSize(p.getPageSize());
+        postResponse.setTotalElements(pagePost.getTotalElements());
+        postResponse.setTotalPages(pagePost.getTotalPages());
+        postResponse.setLastPage(pagePost.isLast());
+
+        return postResponse;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.Khewang.blogging.service;
 
 import com.Khewang.blogging.model.Post;
 import com.Khewang.blogging.payload.PostDto;
+import com.Khewang.blogging.payload.PostResponse;
 
 import java.util.List;
 
@@ -17,7 +18,8 @@ public interface PostService {
 
     //get all posts
 
-    List<PostDto> getAllPost(Integer pageNumber, Integer pageSize);
+//    List<PostDto> getAllPost(Integer pageNumber, Integer pageSize);
+     PostResponse getAllPost(Integer pageNumber, Integer pageSize);
 
     //get single post
 
