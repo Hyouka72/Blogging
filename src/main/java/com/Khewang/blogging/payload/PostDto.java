@@ -2,6 +2,7 @@ package com.Khewang.blogging.payload;
 
 import com.Khewang.blogging.model.Category;
 import com.Khewang.blogging.model.User;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -14,6 +15,8 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class PostDto {
+
+    private Integer postId;
 
     @NotBlank(message = "Title cannot be blank")
     @Size(min =3 , message = "Title should be min of 3 character")
