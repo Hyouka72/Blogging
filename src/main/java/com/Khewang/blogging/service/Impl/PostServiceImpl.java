@@ -76,12 +76,14 @@ public class PostServiceImpl implements PostService {
 
 //        int pageSize = 5;
 //        int pageNumber = 1;
-        Sort sort = null;
-        if(SortDir.equalsIgnoreCase("asc")){
-            sort = Sort.by(sortBy).ascending();
-        }else {
-            sort = Sort.by(sortBy).descending();
-        }
+        Sort sort = SortDir.equalsIgnoreCase("asc") ?  Sort.by(sortBy).ascending() :  Sort.by(sortBy).descending();
+//        if(SortDir.equalsIgnoreCase("asc")){
+//            sort = Sort.by(sortBy).ascending();
+//        }else {
+//            sort = Sort.by(sortBy).descending();
+//        }
+
+//        SortDir.equalsIgnoreCase("asc")? sort = Sort.by(sortBy).ascending(); : sort = Sort.by(sortBy).descending();
         Pageable p = PageRequest.of(pageNumber, pageSize, sort);
 //      List<Post> posts =  this.postRepo.findAll(p);
         Page<Post> pagePost = this.postRepo.findAll(p);
@@ -134,7 +136,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> searchPosts(String Keyword) {
-        return List.of();
+    public List<PostDto> searchPosts(String Keyword) {
+        List<Post> posts = this.postRepo.findByTitleContaining(Keyword);
+        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        return postDtos;
     }
 }
