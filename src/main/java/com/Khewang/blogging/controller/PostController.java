@@ -1,6 +1,7 @@
 package com.Khewang.blogging.controller;
 
 import com.Khewang.blogging.model.Post;
+import com.Khewang.blogging.payload.ApiResponse;
 import com.Khewang.blogging.payload.PostDto;
 import com.Khewang.blogging.service.PostService;
 import jakarta.validation.Valid;
@@ -55,6 +56,22 @@ public class PostController {
     public ResponseEntity<PostDto> getPostById(@PathVariable Integer postId){
         PostDto post = this.postService.getPostById(postId);
         return new ResponseEntity<> (post, HttpStatus.OK);
+    }
+
+    //Delete Post
+    @DeleteMapping("/posts/{postId}")
+    public ApiResponse deletepost(@PathVariable Integer postId){
+         this.postService.deletePost(postId);
+
+         return new ApiResponse("Post Successfully deleted.",true);
+
+    }
+
+    //Update Post
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity<PostDto> updatePost(@PathVariable Integer postId,@Valid @RequestBody PostDto postDto){
+        PostDto updatePost = this.postService.updatePost(postDto, postId);
+        return new ResponseEntity<>(updatePost, HttpStatus.OK);
     }
 
 
