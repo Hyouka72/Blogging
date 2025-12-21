@@ -1,6 +1,5 @@
 package com.Khewang.blogging.controller;
 
-import com.Khewang.blogging.model.Post;
 import com.Khewang.blogging.payload.ApiResponse;
 import com.Khewang.blogging.payload.PostDto;
 import com.Khewang.blogging.service.PostService;
@@ -46,8 +45,11 @@ public class PostController {
     //get all post
 
     @GetMapping("/posts")
-    public ResponseEntity<List<PostDto>> getAllPost(){
-        List<PostDto> posts = this.postService.getAllPost();
+    public ResponseEntity<List<PostDto>> getAllPost(
+            @RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false)Integer pageSize
+    ){
+        List<PostDto> posts = this.postService.getAllPost(pageNumber,pageSize );
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 

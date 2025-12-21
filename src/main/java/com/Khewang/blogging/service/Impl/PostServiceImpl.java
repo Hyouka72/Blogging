@@ -11,11 +11,13 @@ import com.Khewang.blogging.repository.UserRepository;
 import com.Khewang.blogging.service.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,10 +70,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPost() {
+    public List<PostDto> getAllPost(Integer pageNumber, Integer pageSize) {
 
-        List<Post> posts =  this.postRepo.findAll();
-        List<PostDto> postDtos = posts.stream().map((post )-> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+//        int pageSize = 5;
+//        int pageNumber = 1;
+
+        Pageable p = PageRequest.of(pageNumber, pageSize);
+//      List<Post> posts =  this.postRepo.findAll(p);
+        Page<Post> pagePost = this.postRepo.findAll(p);
+        List<Post> allPost = pagePost.getContent();
+        List<PostDto> postDtos = allPost.stream().map((post )-> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
 
         return postDtos;
     }
