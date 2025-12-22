@@ -1,6 +1,7 @@
 package com.Khewang.blogging.payload;
 
 import com.Khewang.blogging.model.Category;
+import com.Khewang.blogging.model.Comment;
 import com.Khewang.blogging.model.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,5 +35,7 @@ public class PostDto {
     private CategoryDto category;
 
     private UserDto user;
+
+    private Set<CommentDto> comments = new HashSet<>();
 
 }
