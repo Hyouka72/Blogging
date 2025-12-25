@@ -10,6 +10,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,8 +27,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .httpBasic(withDefaults());
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/users/","/api/v1/auth/login","/api/users/")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                .httpBasic(withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 
@@ -38,6 +43,7 @@ public class SecurityConfig {
 
         return provider;
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

@@ -7,6 +7,7 @@ import com.Khewang.blogging.repository.UserRepository;
 import com.Khewang.blogging.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     private final UserRepository userRepository;
     public UserServiceImpl(UserRepository userRepository) {
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         User newUser = this.dtoToUser(userDto);
+        newUser.setPassword(encoder.encode(newUser.getPassword()));
         User savedUser = this.userRepository.save(newUser);
         return this.userToDto(savedUser);
     }
