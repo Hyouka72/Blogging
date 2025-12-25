@@ -2,6 +2,7 @@ package com.Khewang.blogging.service.Impl;
 
 import com.Khewang.blogging.payload.JwtAuthRequest;
 import com.Khewang.blogging.service.AuthService;
+import com.Khewang.blogging.service.JWTService;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,12 +15,15 @@ public class AuthServiceimpl implements AuthService {
     @Autowired
     AuthenticationManager authManager;
 
+    @Autowired
+    JWTService jwtService;
+
     @Override
     public String verify(JwtAuthRequest user) {
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
         if(authentication.isAuthenticated())
-            return "Success";
+            return jwtService.generateToken(user.getUsername());
 
         return "Denied";
     }
